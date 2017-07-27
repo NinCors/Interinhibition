@@ -5,20 +5,28 @@ import time
 runTime = 5
 
 def cell_status(lock, T, child):
-    child.send([random.randint(0,100),time.time()])
-    child.close()
-    lock.release()
+    count = 0 
+    while(count < 5):
+        child.send([random.randint(0,100),time.time()])
+        lock.release()
+        count = count + 1
+        time.sleep(0.1)
 
 def check_status(lock_A,lock_B, p_a, p_b):
-    # lock this process first
-    lock_A.acquire()
-    lock_B.acquire()
+    count = 0
+    while(count < 5):
+        # lock this process first
+        lock_A.acquire()
+        lock_B.acquire()
 
-    # This process will be unlocked after two child processes sent their data
-    A = p_a.recv()
-    B = p_b.recv()
+        # This process will be unlocked after two child processes sent their data
+        A = p_a.recv()
+        B = p_b.recv()
 
-    print("A is {} and timestamp is {}\n B is {} and timestamp is {}".format(A[0],A[1],B[0],B[1]))
+        print("A is {} and timestamp is {}\n B is {} and timestamp is {}".format(A[0],A[1],B[0],B[1]))
+        count = count+1
+
+
 
 def runner():
     startTime = time.time()
